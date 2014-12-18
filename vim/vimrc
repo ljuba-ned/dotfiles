@@ -2,3 +2,12 @@ execute pathogen#infect()
 call pathogen#helptags()
 syntax on
 filetype plugin indent on
+
+" show and format status line
+set laststatus=2
+
+" Format the status line
+set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l}
+
+" set theme for airline
+let g:airline_theme='luna'
