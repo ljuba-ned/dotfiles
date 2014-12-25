@@ -17,6 +17,16 @@ if has("mac") || has("macunix")
     set gfn=Source\ Code\ Pro\ Light:h13,Menlo:h13
 endif
 
+" colorscheme based on time of the day
+colorscheme solarized
+if strftime("%H") > 18
+    set background=dark
+elseif strftime("%H") < 7
+    set background=dark
+else
+    set background=light
+endif
+
 " tab related
 " set tab to 4 spaces
 set tabstop=4
