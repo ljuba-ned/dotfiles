@@ -18,7 +18,7 @@ if has("mac") || has("macunix")
 endif
 
 " colorscheme based on time of the day
-colorscheme solarized
+" colorscheme solarized
 if strftime("%H") > 18
     set background=dark
 elseif strftime("%H") < 7
