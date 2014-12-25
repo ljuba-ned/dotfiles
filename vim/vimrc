@@ -11,3 +11,16 @@ set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ 
 
 " set theme for airline
 let g:airline_theme='luna'
+
+" GUI font
+if has("mac") || has("macunix")
+    set gfn=Source\ Code\ Pro\ Light:h13,Menlo:h13
+endif
+
+" tab related
+" set tab to 4 spaces
+set tabstop=4
+" replace tab with spaces
+set expandtab
+set shiftwidth=4
+set softtabstop=4
