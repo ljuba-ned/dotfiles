@@ -1,6 +1,8 @@
 execute pathogen#infect()
 call pathogen#helptags()
 syntax on
+" highlight all search matches
+set hlsearch
 filetype plugin indent on
 
 " show and format status line
@@ -34,3 +36,7 @@ set tabstop=4
 set expandtab
 set shiftwidth=4
 set softtabstop=4
+
+" map leader to comma instead of backslash
+let mapleader = ","
+
