@@ -2,7 +2,7 @@
 
 Clone this repo and make appropriate symbolic links
 
-```
+```bash
 cd ~
 git clone https://github.com/ljuba-ned/dotfiles.git dotfiles
 cd dotfiles
