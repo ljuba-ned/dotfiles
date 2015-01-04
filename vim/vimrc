@@ -40,3 +40,6 @@ set softtabstop=4
 " map leader to comma instead of backslash
 let mapleader = ","
 
+" hide toolbar and meny bar in gvim/mvim
+:set guioptions-=m  "remove menu bar
+:set guioptions-=T  "remove toolbar
