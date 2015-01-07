@@ -40,3 +40,7 @@ set softtabstop=4
 " map leader to comma instead of backslash
 let mapleader = ","
 
+" disable swap and backup files
+set nobackup       " no backup files
+set nowritebackup  " only in case you don't want a backup file while editing
+set noswapfile     " no swap files
