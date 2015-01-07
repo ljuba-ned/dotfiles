@@ -34,3 +34,8 @@ set tabstop=4
 set expandtab
 set shiftwidth=4
 set softtabstop=4
+
+" disable swap and backup files
+set nobackup       " no backup files
+set nowritebackup  " only in case you don't want a backup file while editing
+set noswapfile     " no swap files
