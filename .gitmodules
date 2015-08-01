@@ -13,6 +13,9 @@
 [submodule "vim/bundle/delmitmate"]
 	path = vim/bundle/delmitmate
 	url = git://github.com/Raimondi/delimitMate.git
-[submodule "vim/bundle/nerdcommenter"]
-	path = vim/bundle/nerdcommenter
+[submodule "vim/bundle/ncommenter"]
+	path = vim/bundle/ncommenter
 	url = git://github.com/scrooloose/nerdcommenter.git
+[submodule "vim/bundle/scratch"]
+	path = vim/bundle/scratch
+	url = git@github.com:mtth/scratch.vim.git
