@@ -10,7 +10,7 @@ set laststatus=2
 set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l}
 
 " to set theme for airline, uncomment following line and set desired value
-" let g:airline_theme='luna'
+let g:airline_theme='luna'
 
 " tab related
 " set tab to 4 spaces
