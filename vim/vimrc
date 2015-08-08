@@ -27,3 +27,4 @@ set nowritebackup  " only in case you don't want a backup file while editing
 " for shared computers swapfiles are good idea -- vim will notify you if
 " someone else has opened the file for editing.
 " set noswapfile     " no swap files
+let mapleader=","
