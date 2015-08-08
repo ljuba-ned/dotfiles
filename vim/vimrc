@@ -9,23 +9,8 @@ set laststatus=2
 " Format the status line
 set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l}
 
-" set theme for airline
-let g:airline_theme='luna'
-
-" GUI font
-if has("mac") || has("macunix")
-    set gfn=Source\ Code\ Pro\ Light:h13,Menlo:h13
-endif
-
-" colorscheme based on time of the day
-" colorscheme solarized
-if strftime("%H") > 18
-    set background=dark
-elseif strftime("%H") < 7
-    set background=dark
-else
-    set background=light
-endif
+" to set theme for airline, uncomment following line and set desired value
+" let g:airline_theme='luna'
 
 " tab related
 " set tab to 4 spaces
@@ -38,4 +23,7 @@ set softtabstop=4
 " disable swap and backup files
 set nobackup       " no backup files
 set nowritebackup  " only in case you don't want a backup file while editing
-set noswapfile     " no swap files
+" uncomment following line if you do not want swap files
+" for shared computers swapfiles are good idea -- vim will notify you if
+" someone else has opened the file for editing.
+" set noswapfile     " no swap files
