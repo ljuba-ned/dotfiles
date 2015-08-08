@@ -47,3 +47,6 @@ set nowritebackup  " only in case you don't want a backup file while editing
 set noswapfile     " no swap files
 set guioptions-=T  " no toolbar
 set guioptions-=r  " no scrollbar
+" hide toolbar and meny bar in gvim/mvim
+:set guioptions-=m  "remove menu bar
+:set guioptions-=T  "remove toolbar
