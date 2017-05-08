@@ -13,5 +13,7 @@ git submodule update
 # home directory, rename them
 ln -sf ~/dotfiles/vim/vimrc ~/.vimrc
 ln -sf ~/dotfiles/vim ~/.vim
+# symlink for tmux configuration
+ln -sf ~/dotfiles/.tmux.conf ~/.tmux.conf
 ```
 
