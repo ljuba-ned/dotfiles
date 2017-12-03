@@ -1,6 +1,6 @@
 [submodule "vim/pack/my-plugins/start/base16-vim"]
     path = vim/pack/my-plugins/start/base16-vim
-    url = git@github.com:chriskempson/base16-vim.git
+    url = https://github.com/chriskempson/base16-vim.git
 
 [submodule "vim/pack/my-plugins/start/fzf.vim"]
     path = vim/pack/my-plugins/start/fzf.vim
