@@ -68,5 +68,5 @@
 
 [submodule "vim/pack/my-plugins/opt/YouCompleteMe"]
     path = vim/pack/my-plugins/opt/YouCompleteMe
-    url = git@github.com:Valloric/YouCompleteMe.git
+    url = https://github.com/Valloric/YouCompleteMe.git
 
