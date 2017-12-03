@@ -37,7 +37,7 @@ Within vim itself, issue:
 :packadd <Tab>
 ```
 
-and cycle through available options, both third party and build-in ones.
+and cycle through available options, both third party and built-in ones.
 
 #### Permanently
 
@@ -47,7 +47,5 @@ In shell, move plugin directory from `~/dotfiles/vim/pack/my-plugins/opt` to
 ### [YouCompleteMe](https://github.com/Valloric/YouCompleteMe)
 
 Because of the complexity and multitude of supported languages, [YCM](https://github.com/Valloric/YouCompleteMe) plugin need to be installed. For details see
-[installation instructions](https://github.com/Valloric/YouCompleteMe#Installation).
-
-
+[installation instructions](https://github.com/Valloric/YouCompleteMe#installation).
 
