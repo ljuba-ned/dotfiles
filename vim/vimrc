@@ -1,0 +1,197 @@
+" point to plugins
+" this is not needed any more since vim 8 has its own plugin
+" loading mechanism
+" execute pathogen#infect()
+
+" set line numbers
+set number
+
+" set relative line numbering
+set rnu
+
+" break visual lines on word boundary
+set linebreak
+set colorcolumn=80
+" highlight ColorColumn ctermbg=8
+highlight ColorColumn ctermbg=3
+
+" enable system paste
+" disabled generally because ultisnips plugin does not work with paste
+" activated. Activate manually when needed.
+" set paste
+
+" enable syntax highlighting
+syntax on
+
+" incremental search and highlight matches
+set hlsearch
+set incsearch
+set ignorecase
+set smartcase
+
+" smart indenting depending on file type
+filetype plugin on
+filetype plugin indent on
+
+" show and format status bar
+set laststatus=2
+set statusline=\ %F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l}
+
+" set the theme for status bar; If not specified airline will
+" chose something based on terminal scheme
+let g:airline_theme='badwolf'
+" enable arrow-like transition from section to section
+let g:airline_powerline_fonts=1
+
+" airline customization
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+
+" unicode symbols for airline
+let g:airline_left_sep = '»'
+let g:airline_left_sep = '▶'
+let g:airline_right_sep = '«'
+let g:airline_right_sep = '◀'
+let g:airline_symbols.linenr = '␊'
+let g:airline_symbols.linenr = '␤'
+let g:airline_symbols.linenr = '¶'
+let g:airline_symbols.branch = '⎇'
+let g:airline_symbols.paste = 'ρ'
+let g:airline_symbols.paste = 'Þ'
+let g:airline_symbols.paste = '∥'
+let g:airline_symbols.whitespace = 'Ξ'
+
+" powerline symbols for airline
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
+let g:airline_symbols.branch = ''
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.linenr = ''
+
+" tab related stuff
+" set tab to 4 spaces
+set tabstop=4
+" replace tabs with spaces
+set expandtab
+
+set shiftwidth=4
+set softtabstop=4
+set shiftround
+
+" remap leader to , instead of \
+let mapleader = ','
+
+" disable swap and backup files
+set nobackup
+set nowritebackup
+set noswapfile
+
+" set hidden for buffers to avoid 'buffer not written' errors
+set hidden
+
+" associate .md files to markdown instead of modula2
+autocmd BufNewFile,BufRead *.md set filetype=markdown
+
+" my maps
+nnoremap ,f :Files<CR>
+nnoremap ,b :Buffers<CR>
+nnoremap ,l :Lines<CR>
+nnoremap ,s :set spell<CR>
+nnoremap ,c :set nospell<CR>
+
+" NERDTreeToggle
+nnoremap ,n :NERDTreeToggle<CR>
+
+" ultisnips related stuff
+let g:UltiSnipsUsePythonVersion = 3
+let g:UltiSnipsExpandTrigger="<s-tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-j>"
+let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+let g:UltiSnipsSnippetsDir = $HOME.
+            \'/.vim/pack/my-plugins/start/vim-snippets/UltiSnips'
+
+" If you want :UltiSnipsEdit to split your window.
+let g:UltiSnipsEditSplit="vertical"
+
+" scratch plugin settings
+let g:scratch_persistence_file = $HOME.'/scratch.md'
+let g:scratch_height = 15
+" set the syntax highlighting for scratch buffer
+let g:scratch_filetype = 'markdown'
+" to open scratch buffer at the bottom uncomment line below
+" let g:scratch_top = 0
+
+" color scheme and background
+colorscheme default
+set background=dark
+
+" GUI specific settings
+if has("gui_running")
+    " trying to store a session on vim quit, just for GUI version
+    " au VimLeave * :mksession! /home/bitanga/.vim/last-session.vim
+	" picked up this one from stackoverflow
+	function! MakeSession()
+		let b:sessiondir = $HOME . "/.vim/sessions" . getcwd()
+		if (filewritable(b:sessiondir) != 2)
+			exe 'silent !mkdir -p ' b:sessiondir
+			redraw!
+		endif
+		let b:filename = b:sessiondir . '/last-session.vim'
+		exe "mksession! " . b:filename
+	endfunction
+
+	function! LoadSession()
+		let b:sessiondir = $HOME . "/.vim/sessions" . getcwd()
+		let b:sessionfile = b:sessiondir . "/last-session.vim"
+		if (filereadable(b:sessionfile))
+			exe 'source ' b:sessionfile
+		else
+			echo "No session loaded."
+		endif
+	endfunction
+
+	" Adding autocommands when entering or leaving Vim
+	au VimEnter * nested :call LoadSession()
+	au VimLeave * :call MakeSession()
+    " override scheme set for terminal vim
+    colorscheme base16-monokai
+
+    function! Sunset_nighttime_callback()
+        " dark airline during the night hours
+        let g:airline_theme='badwolf'
+    endfunction
+
+    function! Sunset_daytime_callback()
+        " light airline during the day
+        let g:airline_theme='sol'
+        " monokai light does not look all that good
+        colorscheme default
+    endfunction
+
+    set lines=35 columns=120
+    " Sunset plugin is taking care of background now
+    " set background=dark
+    set guioptions-=m
+    set guioptions-=T
+    set guioptions-=r
+    set guioptions-=L
+    set guifont=Source\ Code\ Pro\ 12
+    " set 'guide' at column 80
+    set colorcolumn=80
+    " highlight text pass the 79 column
+    match ErrorMsg '\%>80v.\+'
+    " remap copy/cut/paste to terminal-like mappings
+    vmap <C-S-x> "+x
+    vmap <C-S-c> "+y
+    imap <C-S-v> <Esc>"+gP
+endif
+
+" Sunset plugin settings
+" If you care about reveiling details like your lat/long, you can approximate
+" by putting here lat/lon of some large city close to you.
+let g:sunset_latitude = 48.2    " self explanatory
+let g:sunset_longitude = 16.35  " ditto
+
