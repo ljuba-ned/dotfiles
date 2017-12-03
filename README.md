@@ -17,3 +17,12 @@ ln -sf ~/dotfiles/vim ~/.vim
 ln -sf ~/dotfiles/tmux.conf ~/.tmux.conf
 ```
 
+Since 01.2016. themes for vim-airline status bar are maintained separetely.
+To install those themes, run the following:
+
+```bash
+git clone https://github.com/vim-airline/vim-airline-themes.git
+cd vim-airline-themes/autoload/airline/themes
+cp * ~/.vim/pack/my-plugins/start/vim-airline/autoload/airline/themes/
+cd ../../../../.. && rm -rf vim-airline-themes
+```
