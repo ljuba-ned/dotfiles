@@ -32,7 +32,7 @@ let s:is_win = has('win32') || has('win64')
 let s:layout_keys = ['window', 'up', 'down', 'left', 'right']
 let s:bin_dir = expand('<sfile>:h:h:h').'/bin/'
 let s:bin = {
-\ 'preview': s:bin_dir.(!s:is_win && executable('ruby') ? 'preview.rb' : 'preview.sh'),
+\ 'preview': s:bin_dir.(executable('ruby') ? 'preview.rb' : 'preview.sh'),
 \ 'tags':    s:bin_dir.'tags.pl' }
 let s:TYPE = {'dict': type({}), 'funcref': type(function('call')), 'string': type(''), 'list': type([])}
 if s:is_win
@@ -41,8 +41,10 @@ if s:is_win
   else
     let s:bin.preview = fnamemodify(s:bin.preview, ':8')
   endif
-  let s:bin.preview = 'bash '.escape(s:bin.preview, '\')
+  let s:bin.preview = (executable('ruby') ? 'ruby' : 'bash').' '.escape(s:bin.preview, '\')
 endif
+
+let s:wide = 120
 
 function! s:extend_opts(dict, eopts, prepend)
   if empty(a:eopts)
@@ -144,7 +146,8 @@ function! s:chomp(str)
 endfunction
 
 function! s:escape(path)
-  return escape(a:path, ' $%#''"\')
+  let path = fnameescape(a:path)
+  return s:is_win ? escape(path, '$') : path
 endfunction
 
 if v:version >= 704
@@ -326,7 +329,7 @@ function! fzf#vim#_lines(all)
   let rest = []
   let buf = bufnr('')
   let longest_name = 0
-  let display_bufnames = &columns > 100
+  let display_bufnames = &columns > s:wide
   if display_bufnames
     let bufnames = {}
     for b in s:buflisted()
@@ -407,9 +410,12 @@ endfunction
 " Colors
 " ------------------------------------------------------------------
 function! fzf#vim#colors(...)
+  let colors = split(globpath(&rtp, "colors/*.vim"), "\n")
+  if has('packages')
+    let colors += split(globpath(&packpath, "pack/*/opt/*/colors/*.vim"), "\n")
+  endif
   return s:fzf('colors', {
-  \ 'source':  fzf#vim#_uniq(map(split(globpath(&rtp, "colors/*.vim"), "\n"),
-  \               "substitute(fnamemodify(v:val, ':t'), '\\..\\{-}$', '', '')")),
+  \ 'source':  fzf#vim#_uniq(map(colors, "substitute(fnamemodify(v:val, ':t'), '\\..\\{-}$', '', '')")),
   \ 'sink':    'colo',
   \ 'options': '+m --prompt="Colors> "'
   \}, a:000)
@@ -508,7 +514,7 @@ function! fzf#vim#gitfiles(args, ...)
   endif
   if a:args != '?'
     return s:fzf('gfiles', {
-    \ 'source':  'git ls-files '.a:args,
+    \ 'source':  'git ls-files '.a:args.(s:is_win ? '' : ' | uniq'),
     \ 'dir':     root,
     \ 'options': '-m --prompt "GitFiles> "'
     \}, a:000)
@@ -778,7 +784,7 @@ function! s:tags_sink(lines)
     for line in a:lines[1:]
       try
         let parts   = split(line, '\t\zs')
-        let excmd   = matchstr(join(parts[2:-2], '')[:-2], '^.*\ze;"\t')
+        let excmd   = matchstr(join(parts[2:-2], '')[:-2], '^.\{-}\ze;\?"\t')
         let base    = fnamemodify(parts[-1], ':h')
         let relpath = parts[1][:-2]
         let abspath = relpath =~ (s:is_win ? '^[A-Z]:\' : '^/') ? relpath : join([base, relpath], '/')
@@ -1039,16 +1045,29 @@ endfunction
 " ------------------------------------------------------------------
 " Commits / BCommits
 " ------------------------------------------------------------------
+function! s:yank_to_register(data)
+  let @" = a:data
+  silent! let @* = a:data
+  silent! let @+ = a:data
+endfunction
+
 function! s:commits_sink(lines)
   if len(a:lines) < 2
     return
   endif
 
+  let pat = '[0-9a-f]\{7,9}'
+
+  if a:lines[0] == 'ctrl-y'
+    let hashes = join(filter(map(a:lines[1:], 'matchstr(v:val, pat)'), 'len(v:val)'))
+    return s:yank_to_register(hashes)
+  end
+
   let diff = a:lines[0] == 'ctrl-d'
   let cmd = s:action_for(a:lines[0], 'e')
   let buf = bufnr('')
   for idx in range(1, len(a:lines) - 1)
-    let sha = matchstr(a:lines[idx], '[0-9a-f]\{7,9}')
+    let sha = matchstr(a:lines[idx], pat)
     if !empty(sha)
       if diff
         if idx > 1
@@ -1070,7 +1089,7 @@ function! s:commits(buffer_local, args)
     return s:warn('Not in git repository')
   endif
 
-  let source = 'git log '.get(g:, 'fzf_commits_log_options', '--graph --color=always '.fzf#shellescape('--format=%C(auto)%h%d %s %C(green)%cr'))
+  let source = 'git log '.get(g:, 'fzf_commits_log_options', '--color=always '.fzf#shellescape('--format=%C(auto)%h%d %s %C(green)%cr'))
   let current = expand('%')
   let managed = 0
   if !empty(current)
@@ -1083,6 +1102,8 @@ function! s:commits(buffer_local, args)
       return s:warn('The current buffer is not in the working tree')
     endif
     let source .= ' --follow '.fzf#shellescape(current)
+  else
+    let source .= ' --graph'
   endif
 
   let command = a:buffer_local ? 'BCommits' : 'Commits'
@@ -1092,8 +1113,8 @@ function! s:commits(buffer_local, args)
   \ 'sink*':   s:function('s:commits_sink'),
   \ 'options': ['--ansi', '--multi', '--tiebreak=index', '--reverse',
   \   '--inline-info', '--prompt', command.'> ', '--bind=ctrl-s:toggle-sort',
-  \   '--header', ':: Press '.s:magenta('CTRL-S', 'Special').' to toggle sort',
-  \   '--expect='.expect_keys]
+  \   '--header', ':: Press '.s:magenta('CTRL-S', 'Special').' to toggle sort, '.s:magenta('CTRL-Y', 'Special').' to yank commit hashes',
+  \   '--expect=ctrl-y,'.expect_keys]
   \ }
 
   if a:buffer_local
@@ -1101,9 +1122,9 @@ function! s:commits(buffer_local, args)
     let options.options[-1] .= ',ctrl-d'
   endif
 
-  if !s:is_win
+  if !s:is_win && &columns > s:wide
     call extend(options.options,
-    \ ['--preview', 'grep -o "[a-f0-9]\{7,\}" <<< {} | xargs git show --format=format: --color=always | head -200'])
+    \ ['--preview', 'echo {} | grep -o "[a-f0-9]\{7,\}" | head -1 | xargs git show --format=format: --color=always | head -200'])
   endif
 
   return s:fzf(a:buffer_local ? 'bcommits' : 'commits', options, a:args)
